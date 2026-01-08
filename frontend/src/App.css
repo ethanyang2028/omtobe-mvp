@@ -1,0 +1,249 @@
+/**
+ * Omtobe App Styles: The Zen Minimalist UI
+ * 
+ * Design Protocol:
+ * - Pure black void (#000000)
+ * - System fonts with professional letter-spacing
+ * - Soft gray text (#A1A1AA)
+ * - Ghost buttons only
+ * - Zero visual noise when not intervening
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  color: #A1A1AA;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+}
+
+/* ============================================================================
+   DIGITAL VOID: INVISIBLE WHEN NOT INTERVENING
+   ============================================================================ */
+
+.digital-void {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  /* Intentionally empty: zero UI elements */
+}
+
+/* ============================================================================
+   ONBOARDING SCREEN
+   ============================================================================ */
+
+.onboarding-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+}
+
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 500px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.onboarding-container h1 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #A1A1AA;
+  margin: 0;
+}
+
+.onboarding-subtitle {
+  font-size: 0.95rem;
+  color: #727278;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: #A1A1AA;
+  text-transform: uppercase;
+}
+
+.form-group input {
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border: 0.5px solid #A1A1AA;
+  border-radius: 0;
+  background-color: transparent;
+  color: #A1A1AA;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #C4C4C8;
+  background-color: rgba(161, 161, 170, 0.05);
+}
+
+.form-group input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.form-group input::placeholder {
+  color: #727278;
+}
+
+.onboarding-button {
+  padding: 1rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  border: 0.5px solid #A1A1AA;
+  border-radius: 0;
+  background-color: transparent;
+  color: #A1A1AA;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  margin-top: 1rem;
+}
+
+.onboarding-button:hover:not(:disabled) {
+  background-color: rgba(161, 161, 170, 0.05);
+  border-color: #C4C4C8;
+  color: #C4C4C8;
+}
+
+.onboarding-button:active:not(:disabled) {
+  background-color: rgba(161, 161, 170, 0.1);
+}
+
+.onboarding-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.onboarding-info {
+  font-size: 0.875rem;
+  color: #727278;
+  margin-top: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 480px) {
+  .onboarding-container {
+    padding: 1.5rem;
+  }
+
+  .onboarding-container h1 {
+    font-size: 2.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .onboarding-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .onboarding-form {
+    gap: 1rem;
+  }
+
+  .form-group input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .onboarding-button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY & MOTION PREFERENCES
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  /* Force dark mode even on light scheme preference */
+  body {
+    background-color: #000000;
+    color: #A1A1AA;
+  }
+
+  .app {
+    background-color: #000000;
+  }
+
+  .digital-void {
+    background-color: #000000;
+  }
+
+  .onboarding-screen {
+    background-color: #000000;
+  }
+}
