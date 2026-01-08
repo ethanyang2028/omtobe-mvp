@@ -365,3 +365,4 @@ For questions or feedback, please reach out to the Omtobe team.
 **Omtobe: Mirror + Brake for High-Stakes Decisions**
 
 *Because sometimes the best decision is to pause.*
+.
