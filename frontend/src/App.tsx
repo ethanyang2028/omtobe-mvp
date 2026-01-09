@@ -208,16 +208,19 @@ export const App: React.FC = () => {
         email,
         Intl.DateTimeFormat().resolvedOptions().timeZone
       );
-      setAppState(prev => ({
-        ...prev,
-        userId,
-        screen: 'void',
-      }));
+      // Delay state update to ensure smooth transition
+      setTimeout(() => {
+        setAppState(prev => ({
+          ...prev,
+          userId,
+          screen: 'void',
+        }));
+        setIsLoading(false);
+      }, 500);
     } catch (error) {
       console.error('Failed to create user:', error);
-      alert('Failed to create user. Please try again.');
-    } finally {
       setIsLoading(false);
+      alert('Failed to create user. Please try again.');
     }
   };
 
