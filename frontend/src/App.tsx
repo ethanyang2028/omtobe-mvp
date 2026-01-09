@@ -15,7 +15,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { BrakeScreen } from './components/BrakeScreen';
 import { ReflectionScreen } from './components/ReflectionScreen';
-import { apiClient, StateCheckResponse, StateResponse } from './api/client';
+import { mockApiClient as apiClient, StateCheckResponse, StateResponse } from './api/mock-client';
 import './App.css';
 
 type ScreenState = 'void' | 'brake' | 'reflection' | 'onboarding';
