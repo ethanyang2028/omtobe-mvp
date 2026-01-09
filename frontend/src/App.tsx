@@ -268,15 +268,17 @@ const DigitalVoid: React.FC<{ state: AppState }> = ({ state }) => {
     <div className="digital-void">
       <div style={{
         position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        fontSize: '12px',
-        color: '#666',
-        fontFamily: 'monospace',
-        opacity: 0.3,
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        textAlign: 'center',
       }}>
-        <div>Day {state.currentDay}/7</div>
-        <div>{state.phase}</div>
+        <div style={{ fontSize: '14px', letterSpacing: '0.05em', color: '#333333' }}>
+          Omtobe is listening
+        </div>
+        <div style={{ fontSize: '11px', marginTop: '8px', color: '#222222' }}>
+          Day {state.currentDay} of 7
+        </div>
       </div>
     </div>
   );
