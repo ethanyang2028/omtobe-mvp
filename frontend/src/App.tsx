@@ -266,7 +266,18 @@ export const App: React.FC = () => {
 const DigitalVoid: React.FC<{ state: AppState }> = ({ state }) => {
   return (
     <div className="digital-void">
-      {/* Intentionally minimal: almost invisible */}
+      <div style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        fontSize: '12px',
+        color: '#666',
+        fontFamily: 'monospace',
+        opacity: 0.3,
+      }}>
+        <div>Day {state.currentDay}/7</div>
+        <div>{state.phase}</div>
+      </div>
     </div>
   );
 };
