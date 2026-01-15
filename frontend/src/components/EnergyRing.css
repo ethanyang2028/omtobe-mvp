@@ -1,0 +1,333 @@
+/**
+ * Energy Ring Styles: Glowing circular intervention button
+ * 
+ * Visual Design:
+ * - Circular button with concentric rings
+ * - Subtle pulsing halo effect
+ * - Smooth transitions on interaction
+ * - Zen-like minimalism with energy
+ */
+
+.energy-ring-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+/* ============================================================================
+   OUTER HALO: Pulsing energy field
+   ============================================================================ */
+
+.energy-halo {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 158, 255, 0.15) 0%, transparent 70%);
+  animation: haloPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.energy-halo.halo-active {
+  animation: haloPulseActive 2s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+  0% {
+    box-shadow: 0 0 20px rgba(74, 158, 255, 0.1), 0 0 40px rgba(74, 158, 255, 0.05);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(74, 158, 255, 0.15), 0 0 60px rgba(74, 158, 255, 0.08);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(74, 158, 255, 0.1), 0 0 40px rgba(74, 158, 255, 0.05);
+    transform: scale(1);
+  }
+}
+
+@keyframes haloPulseActive {
+  0% {
+    box-shadow: 0 0 30px rgba(74, 158, 255, 0.2), 0 0 60px rgba(74, 158, 255, 0.1);
+    transform: scale(1.05);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(74, 158, 255, 0.3), 0 0 80px rgba(74, 158, 255, 0.15);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(74, 158, 255, 0.2), 0 0 60px rgba(74, 158, 255, 0.1);
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================================================
+   MAIN RING BUTTON: Interactive circular element
+   ============================================================================ */
+
+.energy-ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(74, 158, 255, 0.4);
+  background: radial-gradient(circle at 30% 30%, rgba(74, 158, 255, 0.08), transparent);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a9eff;
+  font-size: 0;
+  padding: 0;
+  box-shadow: inset 0 0 20px rgba(74, 158, 255, 0.05);
+  z-index: 10;
+}
+
+.energy-ring:hover:not(:disabled) {
+  border-color: rgba(74, 158, 255, 0.6);
+  background: radial-gradient(circle at 30% 30%, rgba(74, 158, 255, 0.15), transparent);
+  box-shadow: 
+    inset 0 0 20px rgba(74, 158, 255, 0.1),
+    0 0 30px rgba(74, 158, 255, 0.2);
+  transform: scale(1.08);
+}
+
+.energy-ring:active:not(:disabled) {
+  transform: scale(0.96);
+  box-shadow: 
+    inset 0 0 30px rgba(74, 158, 255, 0.15),
+    0 0 40px rgba(74, 158, 255, 0.25);
+}
+
+.energy-ring:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.energy-ring.ring-active {
+  border-color: rgba(74, 158, 255, 0.8);
+  background: radial-gradient(circle at 30% 30%, rgba(74, 158, 255, 0.2), transparent);
+  box-shadow: 
+    inset 0 0 30px rgba(74, 158, 255, 0.15),
+    0 0 50px rgba(74, 158, 255, 0.3);
+}
+
+/* ============================================================================
+   INNER GLOW: Subtle radiance
+   ============================================================================ */
+
+.ring-inner-glow {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 158, 255, 0.3) 0%, transparent 70%);
+  animation: glowPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+}
+
+/* ============================================================================
+   ICON: Meditation/Protection symbol
+   ============================================================================ */
+
+.ring-icon {
+  position: relative;
+  z-index: 2;
+  color: #4a9eff;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+.energy-ring:hover .ring-icon {
+  opacity: 1;
+  color: #6bb3ff;
+}
+
+@keyframes iconFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* ============================================================================
+   LOADING SPINNER
+   ============================================================================ */
+
+.ring-spinner {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: #4a9eff;
+  border-right-color: rgba(74, 158, 255, 0.3);
+  animation: spinnerRotate 1.5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spinnerRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   TEXT LABEL: Instruction and call-to-action
+   ============================================================================ */
+
+.energy-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.energy-text {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #a1a1aa;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.energy-subtext {
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: #727278;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .energy-ring-container {
+    gap: 20px;
+    margin-top: 24px;
+  }
+
+  .energy-ring {
+    width: 90px;
+    height: 90px;
+  }
+
+  .ring-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .energy-text {
+    font-size: 13px;
+  }
+
+  .energy-subtext {
+    font-size: 11px;
+  }
+
+  .energy-halo {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .energy-ring-container {
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .energy-ring {
+    width: 80px;
+    height: 80px;
+  }
+
+  .ring-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .energy-text {
+    font-size: 12px;
+  }
+
+  .energy-subtext {
+    font-size: 10px;
+  }
+
+  .energy-halo {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY & MOTION PREFERENCES
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .energy-halo,
+  .ring-inner-glow,
+  .ring-icon,
+  .ring-spinner {
+    animation: none !important;
+  }
+
+  .energy-ring {
+    transition: none !important;
+  }
+
+  .energy-halo {
+    box-shadow: 0 0 10px rgba(74, 158, 255, 0.1);
+  }
+
+  .energy-ring {
+    box-shadow: inset 0 0 15px rgba(74, 158, 255, 0.05);
+  }
+}
+
+/* ============================================================================
+   DARK MODE SUPPORT
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .energy-ring {
+    border-color: rgba(74, 158, 255, 0.4);
+    color: #4a9eff;
+  }
+
+  .ring-icon {
+    color: #4a9eff;
+  }
+}

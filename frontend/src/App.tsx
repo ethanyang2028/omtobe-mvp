@@ -1,5 +1,5 @@
 /**
- * Omtobe MVP v0.1: Main Application with Demo Mode
+ * Omtobe MVP v0.2: Main Application with Demo Mode and Energy Ring
  */
 
 import React, { useEffect, useState, useRef } from 'react';
@@ -8,6 +8,7 @@ import { ReflectionScreen } from './components/ReflectionScreen';
 import { DemoDashboard } from './components/DemoDashboard';
 import { DemoControls } from './components/DemoControls';
 import { ModeToggle } from './components/ModeToggle';
+import { EnergyRing } from './components/EnergyRing';
 import { DemoProvider, useDemo } from './contexts/DemoContext';
 import { mockApiClient as apiClient, StateCheckResponse, StateResponse } from './api/mock-client';
 import './App.css';
@@ -22,7 +23,7 @@ interface AppState {
 }
 
 const AppContent: React.FC = () => {
-  const { demoState, addIntervention, setDay } = useDemo();
+  const { demoState, addIntervention, setDay, setHRV, setCalendarEvent } = useDemo();
   
   const [appState, setAppState] = useState<AppState>({
     screen: 'void',
@@ -234,6 +235,25 @@ const AppContent: React.FC = () => {
     }
   };
 
+  const handleMindfulIntervention = () => {
+    // Trigger panic mode (-30% HRV) + high-risk event + brake screen
+    setHRV('panic');
+    setCalendarEvent('board');
+    
+    // Ensure we're on intervention days (Day 3-5)
+    if (demoState.currentDay < 3 || demoState.currentDay > 5) {
+      setDay(3);
+    }
+    
+    // Trigger brake screen
+    setTimeout(() => {
+      setAppState(prev => ({
+        ...prev,
+        screen: 'brake',
+      }));
+    }, 300);
+  };
+
   const renderScreen = () => {
     switch (appState.screen) {
       case 'brake':
@@ -268,6 +288,7 @@ const AppContent: React.FC = () => {
             onTestBrake={() => setAppState(prev => ({ ...prev, screen: 'brake' }))}
             onTestReflection={() => setAppState(prev => ({ ...prev, screen: 'reflection' }))}
             isDemoMode={demoState.isDemoMode}
+            onMindfulIntervention={handleMindfulIntervention}
           />
         );
     }
@@ -309,7 +330,8 @@ const DigitalVoid: React.FC<{
   onTestBrake?: () => void;
   onTestReflection?: () => void;
   isDemoMode: boolean;
-}> = ({ state, onTestBrake, onTestReflection, isDemoMode }) => {
+  onMindfulIntervention?: () => void;
+}> = ({ state, onTestBrake, onTestReflection, isDemoMode, onMindfulIntervention }) => {
   return (
     <div className="digital-void">
       <div
@@ -328,56 +350,58 @@ const DigitalVoid: React.FC<{
           Day {state.currentDay} of 7
         </div>
 
+        {/* Energy Ring: Mindful Intervention Entry Point (v0.2) */}
+        {onMindfulIntervention && (
+          <EnergyRing onClick={onMindfulIntervention} />
+        )}
+
         {!isDemoMode && (
-          <div style={{ marginTop: '40px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
+          <div style={{ marginTop: '60px', display: 'flex', gap: '16px', justifyContent: 'center', fontSize: '12px', color: '#555555' }}>
+            <span>Debug Mode</span>
             <button
               onClick={onTestBrake}
               style={{
-                padding: '12px 24px',
-                fontSize: '13px',
+                padding: '6px 12px',
+                fontSize: '11px',
                 border: '0.5px solid #444444',
                 borderRadius: '0',
                 backgroundColor: 'transparent',
-                color: '#666666',
+                color: '#555555',
                 cursor: 'pointer',
-                letterSpacing: '0.03em',
+                letterSpacing: '0.02em',
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
-                e.currentTarget.style.borderColor = '#666666';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = '#444444';
               }}
             >
-              Test Brake Screen
+              Brake
             </button>
 
             <button
               onClick={onTestReflection}
               style={{
-                padding: '12px 24px',
-                fontSize: '13px',
+                padding: '6px 12px',
+                fontSize: '11px',
                 border: '0.5px solid #444444',
                 borderRadius: '0',
                 backgroundColor: 'transparent',
-                color: '#666666',
+                color: '#555555',
                 cursor: 'pointer',
-                letterSpacing: '0.03em',
+                letterSpacing: '0.02em',
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
-                e.currentTarget.style.borderColor = '#666666';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = '#444444';
               }}
             >
-              Test Reflection
+              Reflection
             </button>
           </div>
         )}
