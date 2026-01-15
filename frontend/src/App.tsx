@@ -36,34 +36,18 @@ const AppContent: React.FC = () => {
   const stateCheckIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const reflectionCheckRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize app
+  // Initialize app - skip onboarding, go directly to DigitalVoid
   useEffect(() => {
     const initApp = async () => {
       try {
         const storedUserId = localStorage.getItem('omtobe_user_id');
-        const demoStateFromStorage = localStorage.getItem('omtobe_demo_state');
-        const isDemoMode = demoStateFromStorage ? JSON.parse(demoStateFromStorage).isDemoMode : false;
-
-        if (storedUserId) {
-          apiClient.setUserId(storedUserId);
-          setAppState(prev => ({
-            ...prev,
-            userId: storedUserId,
-            screen: 'void',
-          }));
-        } else if (isDemoMode) {
-          // In demo mode, skip onboarding and go directly to void screen
-          setAppState(prev => ({
-            ...prev,
-            userId: 'demo_user',
-            screen: 'void',
-          }));
-        } else {
-          setAppState(prev => ({
-            ...prev,
-            screen: 'onboarding',
-          }));
-        }
+        
+        // Always go to void screen (DigitalVoid) for immediate user experience
+        setAppState(prev => ({
+          ...prev,
+          userId: storedUserId || 'guest_user',
+          screen: 'void',
+        }));
 
         await apiClient.healthCheck();
       } catch (error) {
