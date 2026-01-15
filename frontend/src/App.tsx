@@ -425,57 +425,39 @@ const OnboardingScreen: React.FC<{
   onComplete: (userId: string, email: string) => void;
   isLoading: boolean;
 }> = ({ onComplete, isLoading }) => {
-  const [userId, setUserId] = useState('');
-  const [email, setEmail] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userId.trim() && email.trim()) {
-      onComplete(userId, email);
-    }
-  };
-
+  // Show DigitalVoid with energy ring instead of login form (v0.2 upgrade)
   return (
-    <div className="onboarding-screen">
-      <div className="onboarding-container">
-        <h1>Omtobe</h1>
-        <p className="onboarding-subtitle">Mirror + Brake for High-Stakes Decisions</p>
+    <div className="digital-void" style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1,
+    }}>
+      <div
+        style={{
+          textAlign: 'center',
+          position: 'relative',
+        }}
+      >
+        <div style={{ fontSize: '20px', letterSpacing: '0.05em', color: '#666666' }}>
+          Omtobe is listening
+        </div>
+        <div style={{ fontSize: '14px', marginTop: '12px', color: '#444444' }}>
+          Day 1 of 7
+        </div>
 
-        <form onSubmit={handleSubmit} className="onboarding-form">
-          <div className="form-group">
-            <label htmlFor="userId">User ID</label>
-            <input
-              id="userId"
-              type="text"
-              value={userId}
-              onChange={e => setUserId(e.target.value)}
-              placeholder="your_id"
-              disabled={isLoading}
-              required
-            />
-          </div>
+        <EnergyRing onClick={() => {
+          onComplete('guest_user', 'guest@omtobe.app');
+        }} />
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              disabled={isLoading}
-              required
-            />
-          </div>
-
-          <button type="submit" disabled={isLoading} className="onboarding-button">
-            {isLoading ? 'Creating Account...' : 'Start'}
-          </button>
-        </form>
-
-        <p className="onboarding-info">
-          Omtobe will remain silent until a high-stress moment is detected.
-        </p>
+        <div style={{ marginTop: '60px', fontSize: '12px', color: '#555555' }}>
+          感到决策压力？点击开启数字结界
+        </div>
       </div>
     </div>
   );
