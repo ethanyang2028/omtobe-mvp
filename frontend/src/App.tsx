@@ -74,7 +74,18 @@ const AppContent: React.FC = () => {
     };
 
     initApp();
-  }, [demoState.isDemoMode]);
+  }, []);
+
+  // Handle demo mode toggle
+  useEffect(() => {
+    if (demoState.isDemoMode && appState.screen === 'onboarding') {
+      setAppState(prev => ({
+        ...prev,
+        userId: 'demo_user',
+        screen: 'void',
+      }));
+    }
+  }, [demoState.isDemoMode, appState.screen]);
 
 
 
