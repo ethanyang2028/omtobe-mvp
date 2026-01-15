@@ -253,7 +253,11 @@ export const App: React.FC = () => {
 
       case 'void':
       default:
-        return <DigitalVoid state={appState} />;
+        return <DigitalVoid 
+          state={appState} 
+          onTestBrake={() => setAppState(prev => ({ ...prev, screen: 'brake' }))}
+          onTestReflection={() => setAppState(prev => ({ ...prev, screen: 'reflection' }))}
+        />;
     }
   };
 
@@ -263,7 +267,7 @@ export const App: React.FC = () => {
 /**
  * Digital Void: Invisible UI when not intervening
  */
-const DigitalVoid: React.FC<{ state: AppState }> = ({ state }) => {
+const DigitalVoid: React.FC<{ state: AppState; onTestBrake?: () => void; onTestReflection?: () => void }> = ({ state, onTestBrake, onTestReflection }) => {
   return (
     <div className="digital-void">
       <div style={{
@@ -273,11 +277,63 @@ const DigitalVoid: React.FC<{ state: AppState }> = ({ state }) => {
         transform: 'translate(-50%, -50%)',
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: '14px', letterSpacing: '0.05em', color: '#333333' }}>
+        <div style={{ fontSize: '20px', letterSpacing: '0.05em', color: '#666666' }}>
           Omtobe is listening
         </div>
-        <div style={{ fontSize: '11px', marginTop: '8px', color: '#222222' }}>
+        <div style={{ fontSize: '14px', marginTop: '12px', color: '#444444' }}>
           Day {state.currentDay} of 7
+        </div>
+        
+        <div style={{ marginTop: '40px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
+          <button
+            onClick={onTestBrake}
+            style={{
+              padding: '12px 24px',
+              fontSize: '13px',
+              border: '0.5px solid #444444',
+              borderRadius: '0',
+              backgroundColor: 'transparent',
+              color: '#666666',
+              cursor: 'pointer',
+              letterSpacing: '0.03em',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
+              e.currentTarget.style.borderColor = '#666666';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.borderColor = '#444444';
+            }}
+          >
+            Test Brake Screen
+          </button>
+          
+          <button
+            onClick={onTestReflection}
+            style={{
+              padding: '12px 24px',
+              fontSize: '13px',
+              border: '0.5px solid #444444',
+              borderRadius: '0',
+              backgroundColor: 'transparent',
+              color: '#666666',
+              cursor: 'pointer',
+              letterSpacing: '0.03em',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
+              e.currentTarget.style.borderColor = '#666666';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.borderColor = '#444444';
+            }}
+          >
+            Test Reflection
+          </button>
         </div>
       </div>
     </div>
