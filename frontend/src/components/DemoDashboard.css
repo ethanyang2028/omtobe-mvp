@@ -1,0 +1,215 @@
+/**
+ * Demo Dashboard Styles
+ */
+
+.demo-dashboard {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background-color: #1a1a1a;
+  border-right: 1px solid #333333;
+  overflow-y: auto;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.dashboard-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666666;
+  margin: 0 0 16px 0;
+}
+
+/* System Status */
+.status-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-label {
+  font-size: 13px;
+  color: #888888;
+}
+
+.status-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #cccccc;
+}
+
+/* HRV Monitor */
+.hrv-display {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hrv-main {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.hrv-value {
+  font-size: 28px;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+}
+
+.hrv-change {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.hrv-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hrv-detail-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888888;
+}
+
+.hrv-detail-item span:last-child {
+  color: #cccccc;
+}
+
+/* Calendar Events */
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.event-item {
+  padding: 12px;
+  background-color: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+}
+
+.event-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #cccccc;
+  margin-bottom: 4px;
+}
+
+.event-time {
+  font-size: 11px;
+  color: #666666;
+  margin-bottom: 6px;
+}
+
+.event-risk {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Intervention History */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  padding: 12px;
+  background-color: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.history-time {
+  color: #666666;
+  margin-bottom: 6px;
+}
+
+.history-decision {
+  color: #888888;
+  margin-bottom: 4px;
+}
+
+.history-decision strong {
+  color: #cccccc;
+}
+
+.history-outcome {
+  color: #666666;
+}
+
+/* Empty State */
+.empty-state {
+  font-size: 12px;
+  color: #555555;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Scrollbar */
+.demo-dashboard::-webkit-scrollbar {
+  width: 6px;
+}
+
+.demo-dashboard::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+.demo-dashboard::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 3px;
+}
+
+.demo-dashboard::-webkit-scrollbar-thumb:hover {
+  background: #444444;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .demo-dashboard {
+    width: 240px;
+    padding: 16px;
+  }
+
+  .hrv-value {
+    font-size: 24px;
+  }
+
+  .hrv-change {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .demo-dashboard {
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    bottom: 0;
+    top: auto;
+    border-right: none;
+    border-top: 1px solid #333333;
+  }
+}

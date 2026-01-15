@@ -1,20 +1,14 @@
 /**
- * Omtobe MVP v0.1: Main Application
- * 
- * Technical Integration Points:
- * - GET /api/v1/state: Poll every 60 seconds
- * - POST /api/v1/decision: Send immediately on user action
- * - State transitions: void → brake → void (or reflection)
- * 
- * Design Philosophy: Digital Void
- * - Invisible when not intervening
- * - Full-screen intervention when needed
- * - Zero proactive notifications
+ * Omtobe MVP v0.1: Main Application with Demo Mode
  */
 
 import React, { useEffect, useState, useRef } from 'react';
 import { BrakeScreen } from './components/BrakeScreen';
 import { ReflectionScreen } from './components/ReflectionScreen';
+import { DemoDashboard } from './components/DemoDashboard';
+import { DemoControls } from './components/DemoControls';
+import { ModeToggle } from './components/ModeToggle';
+import { DemoProvider, useDemo } from './contexts/DemoContext';
 import { mockApiClient as apiClient, StateCheckResponse, StateResponse } from './api/mock-client';
 import './App.css';
 
@@ -27,7 +21,9 @@ interface AppState {
   phase: string;
 }
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { demoState, addIntervention, setDay } = useDemo();
+  
   const [appState, setAppState] = useState<AppState>({
     screen: 'void',
     userId: null,
@@ -43,7 +39,6 @@ export const App: React.FC = () => {
   useEffect(() => {
     const initApp = async () => {
       try {
-        // Check if user already exists
         const storedUserId = localStorage.getItem('omtobe_user_id');
 
         if (storedUserId) {
@@ -54,14 +49,12 @@ export const App: React.FC = () => {
             screen: 'void',
           }));
         } else {
-          // Show onboarding
           setAppState(prev => ({
             ...prev,
             screen: 'onboarding',
           }));
         }
 
-        // Health check
         await apiClient.healthCheck();
       } catch (error) {
         console.error('Failed to initialize app:', error);
@@ -71,35 +64,63 @@ export const App: React.FC = () => {
     initApp();
   }, []);
 
-  // Start monitoring once user is set
+  // Sync demo state to app state
   useEffect(() => {
-    if (!appState.userId || appState.screen === 'onboarding') {
+    if (demoState.isDemoMode) {
+      setAppState(prev => ({
+        ...prev,
+        currentDay: demoState.currentDay,
+        phase: demoState.phase,
+      }));
+    }
+  }, [demoState.isDemoMode, demoState.currentDay, demoState.phase]);
+
+  // Auto-trigger brake screen in demo mode
+  useEffect(() => {
+    if (
+      demoState.isDemoMode &&
+      demoState.hrv.change <= -20 &&
+      demoState.activeEvents.length > 0 &&
+      demoState.currentDay >= 3 &&
+      demoState.currentDay <= 5 &&
+      appState.screen === 'void'
+    ) {
+      // Automatically trigger brake screen
+      setTimeout(() => {
+        setAppState(prev => ({
+          ...prev,
+          screen: 'brake',
+        }));
+      }, 500);
+    }
+  }, [
+    demoState.isDemoMode,
+    demoState.hrv.change,
+    demoState.activeEvents.length,
+    demoState.currentDay,
+    appState.screen,
+  ]);
+
+  // Start monitoring once user is set (production mode only)
+  useEffect(() => {
+    if (!appState.userId || appState.screen === 'onboarding' || demoState.isDemoMode) {
       return;
     }
 
-    /**
-     * Poll GET /api/v1/state every 60 seconds
-     * Check if INTERVENTION_READY status is returned
-     */
     const checkState = async () => {
       try {
         const response: StateResponse = await apiClient.getState();
         const state = response.state;
 
-        // Update local state
         setAppState(prev => ({
           ...prev,
           currentDay: state.current_day,
           phase: state.phase,
         }));
 
-        // Check if intervention is ready
-        // Note: Backend should return a status field indicating INTERVENTION_READY
-        // For now, we use the brake screen check endpoint
         const brakeCheck: StateCheckResponse = await apiClient.checkBrakeScreen();
 
         if (brakeCheck.should_display && appState.screen === 'void') {
-          // Transition to brake screen
           setAppState(prev => ({
             ...prev,
             screen: 'brake',
@@ -110,10 +131,7 @@ export const App: React.FC = () => {
       }
     };
 
-    // Initial check
     checkState();
-
-    // Poll every 60 seconds
     stateCheckIntervalRef.current = setInterval(checkState, 60000);
 
     return () => {
@@ -121,11 +139,11 @@ export const App: React.FC = () => {
         clearInterval(stateCheckIntervalRef.current);
       }
     };
-  }, [appState.userId, appState.screen]);
+  }, [appState.userId, appState.screen, demoState.isDemoMode]);
 
   // Check for reflection screen on Day 7
   useEffect(() => {
-    if (!appState.userId || appState.screen === 'onboarding') {
+    if (!appState.userId || appState.screen === 'onboarding' || demoState.isDemoMode) {
       return;
     }
 
@@ -134,7 +152,6 @@ export const App: React.FC = () => {
         const state = await apiClient.getState();
 
         if (state.state.current_day === 7) {
-          // Check if it's 09:00 AM local time
           const now = new Date();
           if (now.getHours() === 9 && now.getMinutes() < 5) {
             setAppState(prev => ({
@@ -148,7 +165,6 @@ export const App: React.FC = () => {
       }
     };
 
-    // Check every minute
     reflectionCheckRef.current = setInterval(checkReflection, 60000);
 
     return () => {
@@ -156,22 +172,20 @@ export const App: React.FC = () => {
         clearInterval(reflectionCheckRef.current);
       }
     };
-  }, [appState.userId, appState.screen]);
+  }, [appState.userId, appState.screen, demoState.isDemoMode]);
 
-  /**
-   * Handle brake decision
-   * POST /api/v1/decision is called inside BrakeScreen component
-   * This callback clears the intervention state
-   */
   const handleBrakeDecision = (decision: 'Proceed' | 'Delay') => {
-    // Clear brake screen and return to void
+    // Record in demo mode
+    if (demoState.isDemoMode) {
+      addIntervention(decision);
+    }
+
     setAppState(prev => ({
       ...prev,
       screen: 'void',
     }));
 
     if (decision === 'Delay') {
-      // After 20 minutes, check again
       setTimeout(() => {
         apiClient.checkBrakeScreen().then(response => {
           if (response.should_display && appState.screen === 'void') {
@@ -181,25 +195,22 @@ export const App: React.FC = () => {
             }));
           }
         });
-      }, 1200000); // 20 minutes
+      }, 1200000);
     }
   };
 
-  /**
-   * Handle reflection response
-   */
   const handleReflection = (response: 'Yes' | 'No' | 'Skip') => {
-    // Close reflection screen and return to void
     setAppState(prev => ({
       ...prev,
       screen: 'void',
-      currentDay: 1, // Reset to Day 1 after reflection
+      currentDay: 1,
     }));
+
+    if (demoState.isDemoMode) {
+      setDay(1);
+    }
   };
 
-  /**
-   * Handle onboarding
-   */
   const handleOnboarding = async (userId: string, email: string) => {
     setIsLoading(true);
     try {
@@ -208,7 +219,6 @@ export const App: React.FC = () => {
         email,
         Intl.DateTimeFormat().resolvedOptions().timeZone
       );
-      // Delay state update to ensure smooth transition
       setTimeout(() => {
         setAppState(prev => ({
           ...prev,
@@ -224,7 +234,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // Render appropriate screen
   const renderScreen = () => {
     switch (appState.screen) {
       case 'brake':
@@ -253,96 +262,130 @@ export const App: React.FC = () => {
 
       case 'void':
       default:
-        return <DigitalVoid 
-          state={appState} 
-          onTestBrake={() => setAppState(prev => ({ ...prev, screen: 'brake' }))}
-          onTestReflection={() => setAppState(prev => ({ ...prev, screen: 'reflection' }))}
-        />;
+        return (
+          <DigitalVoid
+            state={appState}
+            onTestBrake={() => setAppState(prev => ({ ...prev, screen: 'brake' }))}
+            onTestReflection={() => setAppState(prev => ({ ...prev, screen: 'reflection' }))}
+            isDemoMode={demoState.isDemoMode}
+          />
+        );
     }
   };
 
-  return <div className="app">{renderScreen()}</div>;
+  return (
+    <div className={`app ${demoState.isDemoMode ? 'demo-mode' : ''}`}>
+      <ModeToggle />
+      {demoState.isDemoMode && <DemoDashboard />}
+      <div
+        className="main-content"
+        style={{
+          marginLeft: demoState.isDemoMode ? '280px' : '0',
+          marginBottom: demoState.isDemoMode ? '200px' : '0',
+        }}
+      >
+        {renderScreen()}
+      </div>
+      {demoState.isDemoMode && (
+        <DemoControls
+          onTriggerBrake={() => setAppState(prev => ({ ...prev, screen: 'brake' }))}
+          onTriggerReflection={() => setAppState(prev => ({ ...prev, screen: 'reflection' }))}
+        />
+      )}
+    </div>
+  );
 };
 
-/**
- * Digital Void: Invisible UI when not intervening
- */
-const DigitalVoid: React.FC<{ state: AppState; onTestBrake?: () => void; onTestReflection?: () => void }> = ({ state, onTestBrake, onTestReflection }) => {
+export const App: React.FC = () => {
+  return (
+    <DemoProvider>
+      <AppContent />
+    </DemoProvider>
+  );
+};
+
+const DigitalVoid: React.FC<{
+  state: AppState;
+  onTestBrake?: () => void;
+  onTestReflection?: () => void;
+  isDemoMode: boolean;
+}> = ({ state, onTestBrake, onTestReflection, isDemoMode }) => {
   return (
     <div className="digital-void">
-      <div style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        textAlign: 'center',
-      }}>
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+        }}
+      >
         <div style={{ fontSize: '20px', letterSpacing: '0.05em', color: '#666666' }}>
           Omtobe is listening
         </div>
         <div style={{ fontSize: '14px', marginTop: '12px', color: '#444444' }}>
           Day {state.currentDay} of 7
         </div>
-        
-        <div style={{ marginTop: '40px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
-          <button
-            onClick={onTestBrake}
-            style={{
-              padding: '12px 24px',
-              fontSize: '13px',
-              border: '0.5px solid #444444',
-              borderRadius: '0',
-              backgroundColor: 'transparent',
-              color: '#666666',
-              cursor: 'pointer',
-              letterSpacing: '0.03em',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
-              e.currentTarget.style.borderColor = '#666666';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor = '#444444';
-            }}
-          >
-            Test Brake Screen
-          </button>
-          
-          <button
-            onClick={onTestReflection}
-            style={{
-              padding: '12px 24px',
-              fontSize: '13px',
-              border: '0.5px solid #444444',
-              borderRadius: '0',
-              backgroundColor: 'transparent',
-              color: '#666666',
-              cursor: 'pointer',
-              letterSpacing: '0.03em',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
-              e.currentTarget.style.borderColor = '#666666';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor = '#444444';
-            }}
-          >
-            Test Reflection
-          </button>
-        </div>
+
+        {!isDemoMode && (
+          <div style={{ marginTop: '40px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
+            <button
+              onClick={onTestBrake}
+              style={{
+                padding: '12px 24px',
+                fontSize: '13px',
+                border: '0.5px solid #444444',
+                borderRadius: '0',
+                backgroundColor: 'transparent',
+                color: '#666666',
+                cursor: 'pointer',
+                letterSpacing: '0.03em',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
+                e.currentTarget.style.borderColor = '#666666';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = '#444444';
+              }}
+            >
+              Test Brake Screen
+            </button>
+
+            <button
+              onClick={onTestReflection}
+              style={{
+                padding: '12px 24px',
+                fontSize: '13px',
+                border: '0.5px solid #444444',
+                borderRadius: '0',
+                backgroundColor: 'transparent',
+                color: '#666666',
+                cursor: 'pointer',
+                letterSpacing: '0.03em',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = 'rgba(100, 100, 100, 0.1)';
+                e.currentTarget.style.borderColor = '#666666';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = '#444444';
+              }}
+            >
+              Test Reflection
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-/**
- * Onboarding Screen
- */
 const OnboardingScreen: React.FC<{
   onComplete: (userId: string, email: string) => void;
   isLoading: boolean;
