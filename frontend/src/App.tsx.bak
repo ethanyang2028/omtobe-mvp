@@ -37,27 +37,16 @@ const AppContent: React.FC = () => {
   const reflectionCheckRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize app
-
-  // Initialize app
   useEffect(() => {
     const initApp = async () => {
       try {
         const storedUserId = localStorage.getItem('omtobe_user_id');
-        const demoStateFromStorage = localStorage.getItem('omtobe_demo_state');
-        const isDemoMode = demoStateFromStorage ? JSON.parse(demoStateFromStorage).isDemoMode : false;
 
         if (storedUserId) {
           apiClient.setUserId(storedUserId);
           setAppState(prev => ({
             ...prev,
             userId: storedUserId,
-            screen: 'void',
-          }));
-        } else if (isDemoMode) {
-          // In demo mode, skip onboarding and go directly to void screen
-          setAppState(prev => ({
-            ...prev,
-            userId: 'demo_user',
             screen: 'void',
           }));
         } else {
@@ -74,33 +63,7 @@ const AppContent: React.FC = () => {
     };
 
     initApp();
-  }, [demoState.isDemoMode]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  }, []);
 
   // Sync demo state to app state
   useEffect(() => {
