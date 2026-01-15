@@ -37,8 +37,6 @@ const AppContent: React.FC = () => {
   const reflectionCheckRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize app
-
-  // Initialize app
   useEffect(() => {
     const initApp = async () => {
       try {
@@ -86,32 +84,6 @@ const AppContent: React.FC = () => {
       }));
     }
   }, [demoState.isDemoMode, appState.screen]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Sync demo state to app state
   useEffect(() => {
