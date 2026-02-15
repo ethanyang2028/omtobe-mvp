@@ -70,8 +70,8 @@ export const EnergyRing: React.FC<EnergyRingProps> = ({ onClick, isLoading = fal
 
       {/* Text label below */}
       <div className="energy-label">
-        <p className="energy-text">感到决策压力？</p>
-        <p className="energy-subtext">点击开启数字结界</p>
+        <p className="energy-text">Feeling decision pressure?</p>
+        <p className="energy-subtext">Click to enter Focus Mode</p>
       </div>
     </div>
   );
