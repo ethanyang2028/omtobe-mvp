@@ -138,7 +138,6 @@ class OmtobeMockClient {
     const day = this.getCurrentDay();
     const phase = this.getCurrentPhase();
 
-    // 模拟：Day 3-5 时有 30% 概率显示 Brake 屏幕
     const shouldDisplay = phase === 'INTERVENTION_LOGIC' && Math.random() < 0.3;
 
     if (shouldDisplay) {
@@ -168,7 +167,6 @@ class OmtobeMockClient {
       re_trigger_time: decisionType === 'Delay' ? new Date(Date.now() + 20 * 60 * 1000).toISOString() : undefined,
     };
 
-    // 保存到 localStorage
     const decisions = JSON.parse(localStorage.getItem('omtobe_decisions') || '[]');
     decisions.push({
       timestamp: decision.timestamp,
@@ -194,7 +192,6 @@ class OmtobeMockClient {
       },
     };
 
-    // 保存到 localStorage
     const reflections = JSON.parse(localStorage.getItem('omtobe_reflections') || '[]');
     reflections.push({
       timestamp: reflection.timestamp,
@@ -202,7 +199,6 @@ class OmtobeMockClient {
     });
     localStorage.setItem('omtobe_reflections', JSON.stringify(reflections));
 
-    // 重置周期
     localStorage.setItem('omtobe_cycle_start', new Date().toISOString());
     this.cycleStartDate = new Date();
 
