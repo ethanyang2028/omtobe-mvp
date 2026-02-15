@@ -374,7 +374,6 @@ omtobe_mvp/
 ├── DEPLOYMENT_GUIDE.md
 ├── PRODUCTION_DEPLOYMENT_CHECKLIST.md
 ├── PHASE_5_TESTING_SUMMARY.md
-├── FOUNDERS_KIT.md
 ├── LIVE_DEPLOYMENT_INFO.md
 ├── .env.production
 ├── vercel.json
