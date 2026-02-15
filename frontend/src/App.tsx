@@ -457,7 +457,7 @@ const OnboardingScreen: React.FC<{
         }} />
 
         <div style={{ marginTop: '60px', fontSize: '12px', color: '#555555' }}>
-          感到决策压力？点击开启数字结界
+          Feeling decision pressure? Click to enter Focus Mode
         </div>
       </div>
     </div>
